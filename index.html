@@ -126,12 +126,21 @@
             <p>数字をイメージに変換する練習をしてください</p>
             <div class="controls">
                 <button id="start-number-image">練習開始</button>
+                <label>桁数：<select id="image-number-digits">
+                    <option value="1">1桁</option>
+                    <option value="2" selected>2桁</option>
+                    <option value="3">3桁</option>
+                    <option value="4">4桁</option>
+                </select></label>
             </div>
-            <div id="number-image-display" class="display-area">
+            <div id="number-image-display" class="display-area" style="display: none;">
                 <div class="conversion-practice">
-                    <div class="number-to-convert"></div>
+                    <div class="number-to-convert" id="current-number-display"></div>
                     <input type="text" id="image-description" placeholder="この数字から思い浮かぶイメージを入力してください">
-                    <button id="next-number">次の数字</button>
+                    <div class="practice-buttons">
+                        <button id="next-number">次の数字</button>
+                        <button id="save-image-description">記録して次へ</button>
+                    </div>
                 </div>
             </div>
             <div id="number-image-result" class="result-area"></div>
@@ -179,11 +188,14 @@
             <div class="controls">
                 <button id="start-card-image">練習開始</button>
             </div>
-            <div id="card-image-display" class="display-area">
+            <div id="card-image-display" class="display-area" style="display: none;">
                 <div class="conversion-practice">
-                    <div class="card-to-convert"></div>
+                    <div class="card-to-convert" id="current-card-display"></div>
                     <input type="text" id="card-image-description" placeholder="このカードから思い浮かぶイメージを入力してください">
-                    <button id="next-card">次のカード</button>
+                    <div class="practice-buttons">
+                        <button id="next-card">次のカード</button>
+                        <button id="save-card-description">記録して次へ</button>
+                    </div>
                 </div>
             </div>
             <div id="card-image-result" class="result-area"></div>

@@ -168,6 +168,14 @@ class MemoryTrainer {
         document.getElementById('submit-words').addEventListener('click', () => {
             this.submitWordAnswer();
         });
+
+        document.getElementById('save-image-description').addEventListener('click', () => {
+            this.saveImageDescription();
+        });
+
+        document.getElementById('save-card-description').addEventListener('click', () => {
+            this.saveCardDescription();
+        });
     }
 
     switchGame(gameId) {
@@ -315,7 +323,12 @@ class MemoryTrainer {
 
         for (let i = 0; i < selectedCards.length; i++) {
             await this.sleep(500);
-            displayArea.innerHTML = this.createCardElement(selectedCards[i], true);
+            displayArea.innerHTML = `
+                <div style="display: flex; justify-content: center; align-items: center; min-height: 220px;">
+                    ${this.createRealisticCard(selectedCards[i])}
+                </div>
+                <p>第${i + 1}枚目</p>
+            `;
             await this.sleep(1500);
         }
 
@@ -365,6 +378,164 @@ class MemoryTrainer {
                 <div class="card-suit rotated">${card.suit}</div>
             </div>
         `;
+    }
+
+    createRealisticCard(card) {
+        const suitSymbols = {
+            '♠': { symbol: '♠', name: 'spades' },
+            '♥': { symbol: '♥', name: 'hearts' },
+            '♦': { symbol: '♦', name: 'diamonds' },
+            '♣': { symbol: '♣', name: 'clubs' }
+        };
+
+        const suit = suitSymbols[card.suit];
+        const isRed = card.color === 'red';
+        
+        // フェイスカード（J、Q、K）の場合
+        if (['J', 'Q', 'K'].includes(card.value)) {
+            return `
+                <div class="realistic-card ${card.color}">
+                    <div class="card-corner top-left">
+                        <div class="card-value">${card.value}</div>
+                        <div class="card-suit">${suit.symbol}</div>
+                    </div>
+                    <div class="card-center">
+                        <div class="face-card">
+                            <div class="face-card-value">${card.value}</div>
+                            <div class="face-card-suit">${suit.symbol}</div>
+                        </div>
+                    </div>
+                    <div class="card-corner bottom-right">
+                        <div class="card-value rotated">${card.value}</div>
+                        <div class="card-suit rotated">${suit.symbol}</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // エースの場合
+        if (card.value === 'A') {
+            return `
+                <div class="realistic-card ${card.color}">
+                    <div class="card-corner top-left">
+                        <div class="card-value">${card.value}</div>
+                        <div class="card-suit">${suit.symbol}</div>
+                    </div>
+                    <div class="card-center">
+                        <div class="ace-center">${suit.symbol}</div>
+                    </div>
+                    <div class="card-corner bottom-right">
+                        <div class="card-value rotated">${card.value}</div>
+                        <div class="card-suit rotated">${suit.symbol}</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 数字カード（2-10）の場合
+        const num = parseInt(card.value);
+        let suitPositions = this.getSuitPositions(num);
+        
+        return `
+            <div class="realistic-card ${card.color}">
+                <div class="card-corner top-left">
+                    <div class="card-value">${card.value}</div>
+                    <div class="card-suit">${suit.symbol}</div>
+                </div>
+                <div class="card-center">
+                    <div class="number-card-suits">
+                        ${suitPositions.map(pos => 
+                            `<div class="suit-position" style="top: ${pos.top}%; left: ${pos.left}%; ${pos.rotate ? 'transform: rotate(180deg);' : ''}">${suit.symbol}</div>`
+                        ).join('')}
+                    </div>
+                </div>
+                <div class="card-corner bottom-right">
+                    <div class="card-value rotated">${card.value}</div>
+                    <div class="card-suit rotated">${suit.symbol}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    getSuitPositions(num) {
+        const positions = [];
+        
+        switch(num) {
+            case 2:
+                positions.push({top: 25, left: 50});
+                positions.push({top: 75, left: 50, rotate: true});
+                break;
+            case 3:
+                positions.push({top: 20, left: 50});
+                positions.push({top: 50, left: 50});
+                positions.push({top: 80, left: 50, rotate: true});
+                break;
+            case 4:
+                positions.push({top: 25, left: 30});
+                positions.push({top: 25, left: 70});
+                positions.push({top: 75, left: 30, rotate: true});
+                positions.push({top: 75, left: 70, rotate: true});
+                break;
+            case 5:
+                positions.push({top: 20, left: 30});
+                positions.push({top: 20, left: 70});
+                positions.push({top: 50, left: 50});
+                positions.push({top: 80, left: 30, rotate: true});
+                positions.push({top: 80, left: 70, rotate: true});
+                break;
+            case 6:
+                positions.push({top: 20, left: 30});
+                positions.push({top: 20, left: 70});
+                positions.push({top: 50, left: 30});
+                positions.push({top: 50, left: 70});
+                positions.push({top: 80, left: 30, rotate: true});
+                positions.push({top: 80, left: 70, rotate: true});
+                break;
+            case 7:
+                positions.push({top: 15, left: 30});
+                positions.push({top: 15, left: 70});
+                positions.push({top: 35, left: 50});
+                positions.push({top: 50, left: 30});
+                positions.push({top: 50, left: 70});
+                positions.push({top: 85, left: 30, rotate: true});
+                positions.push({top: 85, left: 70, rotate: true});
+                break;
+            case 8:
+                positions.push({top: 15, left: 30});
+                positions.push({top: 15, left: 70});
+                positions.push({top: 35, left: 50});
+                positions.push({top: 50, left: 30});
+                positions.push({top: 50, left: 70});
+                positions.push({top: 65, left: 50, rotate: true});
+                positions.push({top: 85, left: 30, rotate: true});
+                positions.push({top: 85, left: 70, rotate: true});
+                break;
+            case 9:
+                positions.push({top: 15, left: 30});
+                positions.push({top: 15, left: 70});
+                positions.push({top: 35, left: 30});
+                positions.push({top: 35, left: 70});
+                positions.push({top: 50, left: 50});
+                positions.push({top: 65, left: 30, rotate: true});
+                positions.push({top: 65, left: 70, rotate: true});
+                positions.push({top: 85, left: 30, rotate: true});
+                positions.push({top: 85, left: 70, rotate: true});
+                break;
+            case 10:
+                positions.push({top: 12, left: 30});
+                positions.push({top: 12, left: 70});
+                positions.push({top: 30, left: 50});
+                positions.push({top: 40, left: 30});
+                positions.push({top: 40, left: 70});
+                positions.push({top: 60, left: 30});
+                positions.push({top: 60, left: 70});
+                positions.push({top: 70, left: 50, rotate: true});
+                positions.push({top: 88, left: 30, rotate: true});
+                positions.push({top: 88, left: 70, rotate: true});
+                break;
+        }
+        
+        return positions;
     }
 
     selectCard(element, card) {
@@ -630,43 +801,74 @@ class MemoryTrainer {
         resultArea.innerHTML = '';
         
         this.numberImageHistory = [];
-        this.nextNumberImage();
+        this.generateNextNumber();
+    }
+
+    generateNextNumber() {
+        const digits = parseInt(document.getElementById('image-number-digits').value);
+        const numberElement = document.getElementById('current-number-display');
+        const inputElement = document.getElementById('image-description');
+
+        // 指定された桁数の数字を生成
+        let number = '';
+        for (let i = 0; i < digits; i++) {
+            if (i === 0 && digits > 1) {
+                // 最初の桁は1-9（0で始まらないように）
+                number += Math.floor(Math.random() * 9) + 1;
+            } else {
+                // その他の桁は0-9
+                number += Math.floor(Math.random() * 10);
+            }
+        }
+
+        numberElement.textContent = number;
+        inputElement.value = '';
+        inputElement.focus();
     }
 
     nextNumberImage() {
-        const numberElement = document.querySelector('.number-to-convert');
+        this.generateNextNumber();
+    }
+
+    saveImageDescription() {
+        const numberElement = document.getElementById('current-number-display');
         const inputElement = document.getElementById('image-description');
         const resultArea = document.getElementById('number-image-result');
 
-        // 前の回答を記録
-        const previousValue = inputElement.value.trim();
-        const previousNumber = numberElement.textContent;
-        
-        if (previousValue && previousNumber) {
+        const number = numberElement.textContent;
+        const description = inputElement.value.trim();
+
+        if (description) {
             this.numberImageHistory.push({
-                number: previousNumber,
-                image: previousValue
+                number: number,
+                image: description
             });
+
+            // 履歴を表示
+            this.updateImagePracticeHistory(resultArea, this.numberImageHistory);
             
-            resultArea.innerHTML = `
-                <div class="practice-history">
-                    <h4>練習履歴</h4>
-                    ${this.numberImageHistory.slice(-5).map(item => 
+            // 次の数字を生成
+            this.generateNextNumber();
+        } else {
+            alert('イメージの説明を入力してください。');
+        }
+    }
+
+    updateImagePracticeHistory(resultArea, history) {
+        resultArea.innerHTML = `
+            <div class="practice-history">
+                <h4>練習履歴（${history.length}件）</h4>
+                <div class="history-scroll">
+                    ${history.slice(-10).map(item => 
                         `<div class="history-item">
                             <strong>${item.number}</strong> → ${item.image}
                         </div>`
                     ).join('')}
-                    ${this.numberImageHistory.length > 5 ? '<div class="history-note">...他' + (this.numberImageHistory.length - 5) + '個</div>' : ''}
+                    ${history.length > 10 ? '<div class="history-note">...他' + (history.length - 10) + '個</div>' : ''}
                 </div>
-            `;
-            resultArea.className = 'result-area success';
-        }
-
-        // 新しい数字を表示
-        const randomNumber = Math.floor(Math.random() * 100);
-        numberElement.textContent = randomNumber;
-        inputElement.value = '';
-        inputElement.focus();
+            </div>
+        `;
+        resultArea.className = 'result-area success';
     }
 
     startCardImagePractice() {
@@ -677,46 +879,67 @@ class MemoryTrainer {
         resultArea.innerHTML = '';
         
         this.cardImageHistory = [];
-        this.nextCardImage();
+        this.generateNextCard();
     }
 
-    nextCardImage() {
-        const cardElement = document.querySelector('.card-to-convert');
+    generateNextCard() {
+        const cardElement = document.getElementById('current-card-display');
         const inputElement = document.getElementById('card-image-description');
-        const resultArea = document.getElementById('card-image-result');
 
-        // 前の回答を記録
-        const previousValue = inputElement.value.trim();
-        const previousCard = cardElement.dataset.currentCard;
-        
-        if (previousValue && previousCard) {
-            this.cardImageHistory.push({
-                card: previousCard,
-                image: previousValue
-            });
-            
-            resultArea.innerHTML = `
-                <div class="practice-history">
-                    <h4>練習履歴</h4>
-                    ${this.cardImageHistory.slice(-5).map(item => 
-                        `<div class="history-item">
-                            <strong>${item.card}</strong> → ${item.image}
-                        </div>`
-                    ).join('')}
-                    ${this.cardImageHistory.length > 5 ? '<div class="history-note">...他' + (this.cardImageHistory.length - 5) + '個</div>' : ''}
-                </div>
-            `;
-            resultArea.className = 'result-area success';
-        }
-
-        // 新しいカードを表示
+        // ランダムなカードを選択
         const randomCard = this.cards[Math.floor(Math.random() * this.cards.length)];
-        cardElement.innerHTML = this.createCardElement(randomCard, true);
-        cardElement.className = `card-to-convert ${randomCard.color}`;
+        
+        // カードを表示
+        cardElement.innerHTML = this.createRealisticCard(randomCard);
         cardElement.dataset.currentCard = `${randomCard.value}${randomCard.suit}`;
         
         inputElement.value = '';
         inputElement.focus();
+    }
+
+    nextCardImage() {
+        this.generateNextCard();
+    }
+
+    saveCardDescription() {
+        const cardElement = document.getElementById('current-card-display');
+        const inputElement = document.getElementById('card-image-description');
+        const resultArea = document.getElementById('card-image-result');
+
+        const card = cardElement.dataset.currentCard;
+        const description = inputElement.value.trim();
+
+        if (description) {
+            this.cardImageHistory.push({
+                card: card,
+                image: description
+            });
+
+            // 履歴を表示
+            this.updateCardPracticeHistory(resultArea, this.cardImageHistory);
+            
+            // 次のカードを生成
+            this.generateNextCard();
+        } else {
+            alert('イメージの説明を入力してください。');
+        }
+    }
+
+    updateCardPracticeHistory(resultArea, history) {
+        resultArea.innerHTML = `
+            <div class="practice-history">
+                <h4>練習履歴（${history.length}件）</h4>
+                <div class="history-scroll">
+                    ${history.slice(-10).map(item => 
+                        `<div class="history-item">
+                            <strong>${item.card}</strong> → ${item.image}
+                        </div>`
+                    ).join('')}
+                    ${history.length > 10 ? '<div class="history-note">...他' + (history.length - 10) + '個</div>' : ''}
+                </div>
+            </div>
+        `;
+        resultArea.className = 'result-area success';
     }
 
     shuffleArray(array) {
