@@ -137,21 +137,37 @@ class MemoryTrainer {
             this.resetObjectSelection();
         });
 
-        document.getElementById('start-number-image').addEventListener('click', () => {
-            this.startNumberImagePractice();
-        });
+        const startNumberImageBtn = document.getElementById('start-number-image');
+        if (startNumberImageBtn) {
+            startNumberImageBtn.addEventListener('click', () => {
+                this.startNumberImagePractice();
+            });
+        } else {
+            console.error('start-number-image button not found');
+        }
 
-        document.getElementById('next-number').addEventListener('click', () => {
-            this.nextNumberImage();
-        });
+        const nextNumberBtn = document.getElementById('next-number');
+        if (nextNumberBtn) {
+            nextNumberBtn.addEventListener('click', () => {
+                this.nextNumberImage();
+            });
+        }
 
-        document.getElementById('start-card-image').addEventListener('click', () => {
-            this.startCardImagePractice();
-        });
+        const startCardImageBtn = document.getElementById('start-card-image');
+        if (startCardImageBtn) {
+            startCardImageBtn.addEventListener('click', () => {
+                this.startCardImagePractice();
+            });
+        } else {
+            console.error('start-card-image button not found');
+        }
 
-        document.getElementById('next-card').addEventListener('click', () => {
-            this.nextCardImage();
-        });
+        const nextCardBtn = document.getElementById('next-card');
+        if (nextCardBtn) {
+            nextCardBtn.addEventListener('click', () => {
+                this.nextCardImage();
+            });
+        }
 
         document.getElementById('reset-data').addEventListener('click', () => {
             this.resetAllData();
@@ -169,13 +185,19 @@ class MemoryTrainer {
             this.submitWordAnswer();
         });
 
-        document.getElementById('save-image-description').addEventListener('click', () => {
-            this.saveImageDescription();
-        });
+        const saveImageBtn = document.getElementById('save-image-description');
+        if (saveImageBtn) {
+            saveImageBtn.addEventListener('click', () => {
+                this.saveImageDescription();
+            });
+        }
 
-        document.getElementById('save-card-description').addEventListener('click', () => {
-            this.saveCardDescription();
-        });
+        const saveCardBtn = document.getElementById('save-card-description');
+        if (saveCardBtn) {
+            saveCardBtn.addEventListener('click', () => {
+                this.saveCardDescription();
+            });
+        }
     }
 
     switchGame(gameId) {
@@ -797,17 +819,33 @@ class MemoryTrainer {
         const displayArea = document.getElementById('number-image-display');
         const resultArea = document.getElementById('number-image-result');
         
-        displayArea.style.display = 'block';
-        resultArea.innerHTML = '';
+        if (displayArea) {
+            displayArea.style.display = 'block';
+        }
+        
+        if (resultArea) {
+            resultArea.innerHTML = '';
+        }
         
         this.numberImageHistory = [];
-        this.generateNextNumber();
+        
+        // 少し遅延してから最初の数字を生成
+        setTimeout(() => {
+            this.generateNextNumber();
+        }, 100);
     }
 
     generateNextNumber() {
-        const digits = parseInt(document.getElementById('image-number-digits').value);
+        const digitsElement = document.getElementById('image-number-digits');
         const numberElement = document.getElementById('current-number-display');
         const inputElement = document.getElementById('image-description');
+
+        if (!digitsElement || !numberElement || !inputElement) {
+            console.error('Number image elements not found!');
+            return;
+        }
+
+        const digits = parseInt(digitsElement.value) || 2;
 
         // 指定された桁数の数字を生成
         let number = '';
@@ -823,7 +861,11 @@ class MemoryTrainer {
 
         numberElement.textContent = number;
         inputElement.value = '';
-        inputElement.focus();
+        
+        // フォーカスは後で設定
+        setTimeout(() => {
+            inputElement.focus();
+        }, 100);
     }
 
     nextNumberImage() {
@@ -875,26 +917,45 @@ class MemoryTrainer {
         const displayArea = document.getElementById('card-image-display');
         const resultArea = document.getElementById('card-image-result');
         
-        displayArea.style.display = 'block';
-        resultArea.innerHTML = '';
+        if (displayArea) {
+            displayArea.style.display = 'block';
+        }
+        
+        if (resultArea) {
+            resultArea.innerHTML = '';
+        }
         
         this.cardImageHistory = [];
-        this.generateNextCard();
+        
+        // 少し遅延してから最初のカードを生成
+        setTimeout(() => {
+            this.generateNextCard();
+        }, 100);
     }
 
     generateNextCard() {
         const cardElement = document.getElementById('current-card-display');
         const inputElement = document.getElementById('card-image-description');
 
+        if (!cardElement || !inputElement) {
+            console.error('Card image elements not found!');
+            return;
+        }
+
         // ランダムなカードを選択
         const randomCard = this.cards[Math.floor(Math.random() * this.cards.length)];
         
         // カードを表示
-        cardElement.innerHTML = this.createRealisticCard(randomCard);
+        const cardHTML = this.createRealisticCard(randomCard);
+        cardElement.innerHTML = cardHTML;
         cardElement.dataset.currentCard = `${randomCard.value}${randomCard.suit}`;
         
         inputElement.value = '';
-        inputElement.focus();
+        
+        // フォーカスは後で設定
+        setTimeout(() => {
+            inputElement.focus();
+        }, 100);
     }
 
     nextCardImage() {

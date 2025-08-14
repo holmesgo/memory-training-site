@@ -613,6 +613,40 @@ textarea:focus {
     margin: 1rem 0;
 }
 
+/* 数字表示のスタイル */
+#current-number-display {
+    font-size: 4rem;
+    font-weight: bold;
+    color: #2d3748;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.9);
+    border: 3px solid #4299e1;
+    border-radius: 15px;
+    padding: 2rem;
+    margin: 2rem auto;
+    min-width: 200px;
+    box-shadow: 0 8px 25px rgba(66, 153, 225, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+}
+
+/* イメージ変換練習のコンテナ */
+.conversion-practice {
+    text-align: center;
+    padding: 1rem;
+}
+
+/* 練習ボタンの配置 */
+.practice-buttons {
+    margin-top: 1.5rem;
+}
+
+.practice-buttons button {
+    margin: 0 0.5rem;
+}
+
 .practice-history {
     text-align: left;
     margin: 1rem 0;
