@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>記憶力トレーニング</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>記憶力トレーニング</h1>
+        <p>あなたの記憶力を鍛えましょう</p>
+    </header>
+
+    <nav class="menu">
+        <button class="menu-btn active" data-game="number-sequence">数字記憶</button>
+        <button class="menu-btn" data-game="card-sequence">カード記憶</button>
+        <button class="menu-btn" data-game="object-memory">物・動物記憶</button>
+        <button class="menu-btn" data-game="number-image">数字→イメージ</button>
+        <button class="menu-btn" data-game="card-image">カード→イメージ</button>
+        <button class="menu-btn" data-game="memory-guide">記憶術ガイド</button>
+    </nav>
+
+    <main class="game-container">
+        <!-- 数字記憶ゲーム -->
+        <div id="number-sequence" class="game-content active">
+            <h2>数字記憶ゲーム</h2>
+            <p>表示される数字の順番を覚えて入力してください</p>
+            <div class="controls">
+                <button id="start-number-game">ゲーム開始</button>
+                <label>桁数：<select id="number-digits">
+                    <option value="1">1桁</option>
+                    <option value="2">2桁</option>
+                    <option value="3" selected>3桁</option>
+                    <option value="4">4桁</option>
+                </select></label>
+                <label>回数：<select id="number-count">
+                    <option value="3">3回</option>
+                    <option value="5" selected>5回</option>
+                    <option value="8">8回</option>
+                    <option value="10">10回</option>
+                    <option value="15">15回</option>
+                    <option value="20">20回</option>
+                    <option value="30">30回</option>
+                    <option value="50">50回</option>
+                    <option value="100">100回</option>
+                </select></label>
+            </div>
+            <div id="number-display" class="display-area"></div>
+            <div id="number-input-area" class="input-area" style="display: none;">
+                <input type="text" id="number-answer" placeholder="覚えた数字を入力してください">
+                <button id="submit-number">回答</button>
+            </div>
+            <div id="number-result" class="result-area"></div>
+        </div>
+
+        <!-- カード記憶ゲーム -->
+        <div id="card-sequence" class="game-content">
+            <h2>カード記憶ゲーム</h2>
+            <p>表示されるカードの順番を覚えてクリックしてください</p>
+            <div class="controls">
+                <button id="start-card-game">ゲーム開始</button>
+                <label>枚数：<select id="card-count">
+                    <option value="3">3枚</option>
+                    <option value="5" selected>5枚</option>
+                    <option value="8">8枚</option>
+                </select></label>
+            </div>
+            <div id="card-display" class="display-area card-grid"></div>
+            <div id="card-input-area" class="input-area card-grid" style="display: none;"></div>
+            <div id="card-result" class="result-area"></div>
+        </div>
+
+        <!-- 物・動物記憶ゲーム -->
+        <div id="object-memory" class="game-content">
+            <h2>物・動物記憶ゲーム</h2>
+            <p>一つずつ表示される物や動物の順番を覚えてください</p>
+            <div class="controls">
+                <button id="start-object-game">ゲーム開始</button>
+                <label>個数：<select id="object-count">
+                    <option value="4">4個</option>
+                    <option value="6" selected>6個</option>
+                    <option value="10">10個</option>
+                </select></label>
+            </div>
+            <div id="object-display" class="display-area"></div>
+            <div id="object-input-area" class="input-area" style="display: none;">
+                <p>覚えた順番通りにクリックしてください：</p>
+                <div id="object-choices" class="object-grid"></div>
+                <div class="sequence-display">
+                    <p>選択した順番：</p>
+                    <div id="selected-sequence"></div>
+                </div>
+                <button id="submit-objects">回答完了</button>
+                <button id="reset-objects">やり直し</button>
+            </div>
+            <div id="object-result" class="result-area"></div>
+        </div>
+
+        <!-- 数字→イメージ変換練習 -->
+        <div id="number-image" class="game-content">
+            <h2>数字→イメージ変換練習</h2>
+            <p>数字をイメージに変換する練習をしてください</p>
+            <div class="controls">
+                <button id="start-number-image">練習開始</button>
+            </div>
+            <div id="number-image-display" class="display-area">
+                <div class="conversion-practice">
+                    <div class="number-to-convert"></div>
+                    <input type="text" id="image-description" placeholder="この数字から思い浮かぶイメージを入力してください">
+                    <button id="next-number">次の数字</button>
+                </div>
+            </div>
+            <div id="number-image-result" class="result-area"></div>
+        </div>
+
+        <!-- カード→イメージ変換練習 -->
+        <div id="card-image" class="game-content">
+            <h2>カード→イメージ変換練習</h2>
+            <p>カードをイメージに変換する練習をしてください</p>
+            <div class="controls">
+                <button id="start-card-image">練習開始</button>
+            </div>
+            <div id="card-image-display" class="display-area">
+                <div class="conversion-practice">
+                    <div class="card-to-convert"></div>
+                    <input type="text" id="card-image-description" placeholder="このカードから思い浮かぶイメージを入力してください">
+                    <button id="next-card">次のカード</button>
+                </div>
+            </div>
+            <div id="card-image-result" class="result-area"></div>
+        </div>
+
+        <!-- 記憶術ガイド -->
+        <div id="memory-guide" class="game-content">
+            <h2>記憶術ガイド</h2>
+            <div class="guide-content">
+                
+                <section class="guide-section">
+                    <h3>🧠 記憶術の基本原理</h3>
+                    <p>記憶術は、情報を意味のある形に変換して記憶しやすくする技法です。人間の脳は以下の要素を含む情報を記憶しやすくできています：</p>
+                    <ul>
+                        <li><strong>視覚的なイメージ</strong>：抽象的な数字や文字を具体的な画像に変換</li>
+                        <li><strong>感情的な結び付き</strong>：喜怒哀楽や驚きなどの感情を伴う記憶</li>
+                        <li><strong>ストーリー性</strong>：バラバラな情報を物語として繋げる</li>
+                        <li><strong>場所の記憶</strong>：空間的な位置情報と結び付ける</li>
+                    </ul>
+                </section>
+
+                <section class="guide-section">
+                    <h3>🏰 記憶の宮殿（場所法）</h3>
+                    <p><strong>記憶の宮殿</strong>は最も強力な記憶術の一つです。古代ギリシャ・ローマ時代から使われ、現代の記憶競技者も愛用している技法です。</p>
+                    
+                    <h4>基本的な仕組み：</h4>
+                    <ol>
+                        <li><strong>馴染みのある場所を選ぶ</strong>：自宅、学校、職場など、よく知っている場所</li>
+                        <li><strong>明確なルートを設定</strong>：玄関→リビング→キッチン→寝室のような順序</li>
+                        <li><strong>各地点に情報を配置</strong>：覚えたい項目を各部屋の特定の場所に配置</li>
+                        <li><strong>ルートを辿って思い出す</strong>：設定したルートを脳内で歩いて情報を回収</li>
+                    </ol>
+
+                    <div class="example-box">
+                        <h4>例：買い物リストを覚える</h4>
+                        <p>「牛乳、パン、卵、トマト」を覚える場合：</p>
+                        <ul>
+                            <li>玄関：巨大な牛が牛乳をこぼしている</li>
+                            <li>リビング：ソファの上で食パンがテレビを見ている</li>
+                            <li>キッチン：シンクで卵が踊っている</li>
+                            <li>寝室：ベッドの上で真っ赤なトマトが眠っている</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="guide-section">
+                    <h3>🔢 数字記憶の技法</h3>
+                    
+                    <h4>1. 数字-形状変換法</h4>
+                    <p>数字の形を具体的な物体に変換：</p>
+                    <div class="number-method">
+                        <span>0→卵・輪っか</span>
+                        <span>1→鉛筆・ロウソク</span>
+                        <span>2→白鳥・ハンガー</span>
+                        <span>3→耳・ハート</span>
+                        <span>4→ヨット</span>
+                        <span>5→手・カギ</span>
+                        <span>6→さくらんぼ</span>
+                        <span>7→斧・ブーメラン</span>
+                        <span>8→雪だるま・眼鏡</span>
+                        <span>9→おたま・風船</span>
+                    </div>
+
+                    <h4>2. 数字-音韻変換法</h4>
+                    <p>数字を子音に変換してから単語を作る高度な技法：</p>
+                    <div class="phonetic-method">
+                        <p>1→T/D音、2→N音、3→M音、4→R音、5→L音...</p>
+                        <p>例：「25」→「NL」→「ネイル」（釘）</p>
+                    </div>
+                </section>
+
+                <section class="guide-section">
+                    <h3>🃏 カード記憶の技法</h3>
+                    
+                    <h4>人物・行動・物体システム（PAO）</h4>
+                    <p>各カードを人物（Person）、行動（Action）、物体（Object）に変換：</p>
+                    <div class="card-method">
+                        <div class="card-example">
+                            <strong>スペードのエース</strong>→魔術師が杖を振っている
+                        </div>
+                        <div class="card-example">
+                            <strong>ハートのクイーン</strong>→女王がバラの花束を持っている
+                        </div>
+                        <div class="card-example">
+                            <strong>ダイヤのキング</strong>→王様が宝石を磨いている
+                        </div>
+                    </div>
+
+                    <h4>ストーリー法</h4>
+                    <p>連続するカードを物語として繋げる：</p>
+                    <p>「魔術師が杖を振ると、女王が現れてバラの花束を受け取り、それを見た王様が喜んで宝石を贈る」</p>
+                </section>
+
+                <section class="guide-section">
+                    <h3>🎯 練習のコツ</h3>
+                    <ul>
+                        <li><strong>毎日少しずつ</strong>：15-30分の継続的な練習</li>
+                        <li><strong>感情を込める</strong>：面白い、驚く、変だと感じるイメージを作る</li>
+                        <li><strong>五感を使う</strong>：視覚だけでなく音や匂い、手触りも想像</li>
+                        <li><strong>レビューする</strong>：覚えた内容を定期的に思い出す</li>
+                        <li><strong>実生活で活用</strong>：買い物リスト、電話番号、名前など日常で使う</li>
+                    </ul>
+                </section>
+
+                <section class="guide-section">
+                    <h3>📚 さらなる学習リソース</h3>
+                    <p>記憶術をより深く学ぶためのヒント：</p>
+                    <ul>
+                        <li>記憶競技（メモリースポーツ）の動画や書籍を参考にする</li>
+                        <li>自分なりの数字やカードのイメージシステムを構築する</li>
+                        <li>友人や家族と一緒に練習して楽しみながら覚える</li>
+                        <li>記憶術アプリやオンラインコミュニティに参加する</li>
+                    </ul>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div id="score-display">
+            <h3>スコア</h3>
+            <p>正解数：<span id="correct-count">0</span> / 総問題数：<span id="total-count">0</span></p>
+            <p>正解率：<span id="accuracy">0%</span></p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
