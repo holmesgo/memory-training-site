@@ -16,8 +16,10 @@
         <button class="menu-btn active" data-game="number-sequence">数字記憶</button>
         <button class="menu-btn" data-game="card-sequence">カード記憶</button>
         <button class="menu-btn" data-game="object-memory">物・動物記憶</button>
+        <button class="menu-btn" data-game="word-memory">単語記憶</button>
         <button class="menu-btn" data-game="number-image">数字→イメージ</button>
         <button class="menu-btn" data-game="card-image">カード→イメージ</button>
+        <button class="menu-btn" data-game="statistics">統計</button>
         <button class="menu-btn" data-game="memory-guide">記憶術ガイド</button>
     </nav>
 
@@ -28,6 +30,13 @@
             <p>表示される数字の順番を覚えて入力してください</p>
             <div class="controls">
                 <button id="start-number-game">ゲーム開始</button>
+                <label>レベル：<select id="difficulty-level">
+                    <option value="beginner">初心者</option>
+                    <option value="intermediate" selected>中級者</option>
+                    <option value="advanced">上級者</option>
+                    <option value="expert">専門家</option>
+                    <option value="custom">カスタム</option>
+                </select></label>
                 <label>桁数：<select id="number-digits">
                     <option value="1">1桁</option>
                     <option value="2">2桁</option>
@@ -45,9 +54,23 @@
                     <option value="50">50回</option>
                     <option value="100">100回</option>
                 </select></label>
+                <label>制限時間：<select id="number-time-limit">
+                    <option value="0">なし</option>
+                    <option value="30">30秒</option>
+                    <option value="60" selected>60秒</option>
+                    <option value="120">120秒</option>
+                </select></label>
+                <label><input type="checkbox" id="voice-enabled"> 音声読み上げ</label>
+                
+                <div id="custom-settings" class="custom-settings" style="display: none;">
+                    <p><strong>カスタム設定</strong></p>
+                </div>
             </div>
             <div id="number-display" class="display-area"></div>
             <div id="number-input-area" class="input-area" style="display: none;">
+                <div id="timer-display" class="timer-display" style="display: none;">
+                    残り時間: <span id="timer-seconds">60</span>秒
+                </div>
                 <input type="text" id="number-answer" placeholder="覚えた数字を入力してください">
                 <button id="submit-number">回答</button>
             </div>
@@ -114,6 +137,41 @@
             <div id="number-image-result" class="result-area"></div>
         </div>
 
+        <!-- 単語記憶ゲーム -->
+        <div id="word-memory" class="game-content">
+            <h2>単語記憶ゲーム</h2>
+            <p>表示される単語の順番を覚えて入力してください</p>
+            <div class="controls">
+                <button id="start-word-game">ゲーム開始</button>
+                <label>カテゴリ：<select id="word-category">
+                    <option value="animals">動物</option>
+                    <option value="foods">食べ物</option>
+                    <option value="colors">色</option>
+                    <option value="countries">国名</option>
+                    <option value="sports">スポーツ</option>
+                    <option value="mixed" selected>ミックス</option>
+                </select></label>
+                <label>単語数：<select id="word-count">
+                    <option value="5">5語</option>
+                    <option value="8" selected>8語</option>
+                    <option value="12">12語</option>
+                    <option value="15">15語</option>
+                </select></label>
+                <label>表示時間：<select id="word-display-time">
+                    <option value="1000">1秒</option>
+                    <option value="1500" selected>1.5秒</option>
+                    <option value="2000">2秒</option>
+                    <option value="3000">3秒</option>
+                </select></label>
+            </div>
+            <div id="word-display" class="display-area"></div>
+            <div id="word-input-area" class="input-area" style="display: none;">
+                <textarea id="word-answer" placeholder="覚えた単語を順番通りに入力してください（改行区切り）" rows="6"></textarea>
+                <button id="submit-words">回答</button>
+            </div>
+            <div id="word-result" class="result-area"></div>
+        </div>
+
         <!-- カード→イメージ変換練習 -->
         <div id="card-image" class="game-content">
             <h2>カード→イメージ変換練習</h2>
@@ -129,6 +187,97 @@
                 </div>
             </div>
             <div id="card-image-result" class="result-area"></div>
+        </div>
+
+        <!-- 統計画面 -->
+        <div id="statistics" class="game-content">
+            <h2>統計・成績</h2>
+            <div class="stats-container">
+                
+                <!-- 全体統計 -->
+                <div class="stats-section">
+                    <h3>全体統計</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="total-games">0</div>
+                            <div class="stat-label">総ゲーム数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="overall-accuracy">0%</div>
+                            <div class="stat-label">全体正解率</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="total-streak">0</div>
+                            <div class="stat-label">最高連続正解</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="practice-days">0</div>
+                            <div class="stat-label">練習日数</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ゲーム別統計 -->
+                <div class="stats-section">
+                    <h3>ゲーム別成績</h3>
+                    <div class="game-stats">
+                        <div class="game-stat-item">
+                            <h4>🔢 数字記憶</h4>
+                            <div class="game-stats-details">
+                                <span>正解率: <span id="number-accuracy">0%</span></span>
+                                <span>正解数: <span id="number-correct">0</span>/<span id="number-total">0</span></span>
+                                <span>最高連続: <span id="number-streak">0</span>回</span>
+                            </div>
+                        </div>
+                        <div class="game-stat-item">
+                            <h4>🃏 カード記憶</h4>
+                            <div class="game-stats-details">
+                                <span>正解率: <span id="card-accuracy">0%</span></span>
+                                <span>正解数: <span id="card-correct">0</span>/<span id="card-total">0</span></span>
+                                <span>最高連続: <span id="card-streak">0</span>回</span>
+                            </div>
+                        </div>
+                        <div class="game-stat-item">
+                            <h4>🐱 物・動物記憶</h4>
+                            <div class="game-stats-details">
+                                <span>正解率: <span id="object-accuracy">0%</span></span>
+                                <span>正解数: <span id="object-correct">0</span>/<span id="object-total">0</span></span>
+                                <span>最高連続: <span id="object-streak">0</span>回</span>
+                            </div>
+                        </div>
+                        <div class="game-stat-item">
+                            <h4>📝 単語記憶</h4>
+                            <div class="game-stats-details">
+                                <span>正解率: <span id="word-accuracy">0%</span></span>
+                                <span>正解数: <span id="word-correct">0</span>/<span id="word-total">0</span></span>
+                                <span>最高連続: <span id="word-streak">0</span>回</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 簡易グラフ -->
+                <div class="stats-section">
+                    <h3>正解率推移（最近20回）</h3>
+                    <div id="accuracy-chart" class="chart-container">
+                        <div class="chart-placeholder">データが蓄積されると表示されます</div>
+                    </div>
+                </div>
+
+                <!-- レベル評価 -->
+                <div class="stats-section">
+                    <h3>記憶力レベル評価</h3>
+                    <div class="level-assessment">
+                        <div class="level-bar">
+                            <div id="level-progress" class="level-progress" style="width: 0%"></div>
+                        </div>
+                        <div class="level-info">
+                            <span id="current-level">初心者</span>
+                            <span id="level-description">まずは基本的な記憶術を練習しましょう</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- 記憶術ガイド -->
@@ -250,6 +399,9 @@
             <h3>スコア</h3>
             <p>正解数：<span id="correct-count">0</span> / 総問題数：<span id="total-count">0</span></p>
             <p>正解率：<span id="accuracy">0%</span></p>
+            <p>現在の連続正解：<span id="current-streak">0</span>回</p>
+            <p>最高連続正解：<span id="best-streak">0</span>回</p>
+            <button id="reset-data" class="reset-btn">データリセット</button>
         </div>
     </footer>
 
