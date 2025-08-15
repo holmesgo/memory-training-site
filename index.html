@@ -17,8 +17,6 @@
         <button class="menu-btn" data-game="card-sequence">カード記憶</button>
         <button class="menu-btn" data-game="object-memory">物・動物記憶</button>
         <button class="menu-btn" data-game="word-memory">単語記憶</button>
-        <button class="menu-btn" data-game="number-image">数字→イメージ</button>
-        <button class="menu-btn" data-game="card-image">カード→イメージ</button>
         <button class="menu-btn" data-game="statistics">統計</button>
         <button class="menu-btn" data-game="memory-guide">記憶術ガイド</button>
     </nav>
@@ -120,31 +118,6 @@
             <div id="object-result" class="result-area"></div>
         </div>
 
-        <!-- 数字→イメージ変換練習 -->
-        <div id="number-image" class="game-content">
-            <h2>数字→イメージ変換練習</h2>
-            <p>数字をイメージに変換する練習をしてください</p>
-            <div class="controls">
-                <button id="start-number-image">練習開始</button>
-                <label>桁数：<select id="image-number-digits">
-                    <option value="1">1桁</option>
-                    <option value="2" selected>2桁</option>
-                    <option value="3">3桁</option>
-                    <option value="4">4桁</option>
-                </select></label>
-            </div>
-            <div id="number-image-display" class="display-area" style="display: none;">
-                <div class="conversion-practice">
-                    <div class="number-to-convert" id="current-number-display"></div>
-                    <input type="text" id="image-description" placeholder="この数字から思い浮かぶイメージを入力してください">
-                    <div class="practice-buttons">
-                        <button id="next-number">次の数字</button>
-                        <button id="save-image-description">記録して次へ</button>
-                    </div>
-                </div>
-            </div>
-            <div id="number-image-result" class="result-area"></div>
-        </div>
 
         <!-- 単語記憶ゲーム -->
         <div id="word-memory" class="game-content">
@@ -181,25 +154,6 @@
             <div id="word-result" class="result-area"></div>
         </div>
 
-        <!-- カード→イメージ変換練習 -->
-        <div id="card-image" class="game-content">
-            <h2>カード→イメージ変換練習</h2>
-            <p>カードをイメージに変換する練習をしてください</p>
-            <div class="controls">
-                <button id="start-card-image">練習開始</button>
-            </div>
-            <div id="card-image-display" class="display-area" style="display: none;">
-                <div class="conversion-practice">
-                    <div class="card-to-convert" id="current-card-display"></div>
-                    <input type="text" id="card-image-description" placeholder="このカードから思い浮かぶイメージを入力してください">
-                    <div class="practice-buttons">
-                        <button id="next-card">次のカード</button>
-                        <button id="save-card-description">記録して次へ</button>
-                    </div>
-                </div>
-            </div>
-            <div id="card-image-result" class="result-area"></div>
-        </div>
 
         <!-- 統計画面 -->
         <div id="statistics" class="game-content">
