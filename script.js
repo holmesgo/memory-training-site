@@ -101,9 +101,10 @@ class MemoryTrainer {
     }
 
     initializeEventListeners() {
-        document.querySelectorAll('.menu-btn').forEach(btn => {
+        // ナビゲーションボタンのイベントリスナー
+        document.querySelectorAll('.nav-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                this.switchGame(e.target.dataset.game);
+                this.switchGame(e.currentTarget.dataset.game);
             });
         });
 
@@ -157,7 +158,8 @@ class MemoryTrainer {
     }
 
     switchGame(gameId) {
-        document.querySelectorAll('.menu-btn').forEach(btn => {
+        // アクティブなナビゲーションボタンを更新
+        document.querySelectorAll('.nav-btn').forEach(btn => {
             btn.classList.remove('active');
         });
         document.querySelector(`[data-game="${gameId}"]`).classList.add('active');
@@ -732,6 +734,12 @@ class MemoryTrainer {
         document.getElementById('current-streak').textContent = this.currentStreak;
         const bestStreak = Math.max(...Object.values(this.gameStats).map(stat => stat.bestStreak || 0));
         document.getElementById('best-streak').textContent = bestStreak;
+        
+        // ヘッダーの統計表示も更新
+        const headerAccuracy = document.getElementById('header-accuracy');
+        const headerStreak = document.getElementById('header-streak');
+        if (headerAccuracy) headerAccuracy.textContent = `${accuracy}%`;
+        if (headerStreak) headerStreak.textContent = this.currentStreak;
     }
 
     // ローカルストレージ関連メソッド
