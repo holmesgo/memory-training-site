@@ -1269,7 +1269,266 @@ button {
     font-style: italic;
 }
 
+/* ランダム数字表示のスタイル */
+.random-display-area {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(247, 250, 252, 0.95) 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 2rem 0;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(102, 126, 234, 0.15);
+}
+
+.number-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.number-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.number-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.number-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 48px rgba(102, 126, 234, 0.15);
+    border-color: #667eea;
+}
+
+.card-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.random-number {
+    font-size: 4rem;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 1rem 0;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.image-conversion {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.image-conversion input[type="text"] {
+    width: 100%;
+    max-width: 280px;
+    padding: 1rem;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    border-radius: 12px;
+    font-size: 1rem;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+}
+
+.image-conversion input[type="text"]:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+    background: white;
+}
+
+.stats-info {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: rgba(247, 250, 252, 0.8);
+    border-radius: 12px;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.stats-info p {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.stats-info span {
+    color: #667eea;
+    font-weight: 700;
+}
+
+.conversion-history {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-top: 2rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.conversion-history h3 {
+    color: #1a202c;
+    margin-bottom: 1.5rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    text-align: center;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.conversion-history h3::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 2px;
+}
+
+.history-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.history-item {
+    display: grid;
+    grid-template-columns: 80px 1fr 120px;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(247, 250, 252, 0.6);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    transition: all 0.3s ease;
+}
+
+.history-item:hover {
+    background: rgba(102, 126, 234, 0.05);
+    transform: translateX(4px);
+}
+
+.history-number {
+    font-size: 1.3rem;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    color: #667eea;
+    text-align: center;
+    background: white;
+    padding: 0.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.history-image {
+    font-size: 1rem;
+    color: #374151;
+    font-weight: 500;
+}
+
+.history-timestamp {
+    font-size: 0.8rem;
+    color: #64748b;
+    text-align: right;
+}
+
+.no-history {
+    text-align: center;
+    color: #9ca3af;
+    font-style: italic;
+    padding: 2rem;
+    margin: 0;
+}
+
+#custom-digits {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#custom-digit-count {
+    width: 80px;
+    padding: 0.5rem;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    border-radius: 8px;
+    font-size: 1rem;
+    text-align: center;
+}
+
+#custom-digit-count:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
 @media (max-width: 768px) {
+    .number-cards {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .number-card {
+        padding: 1.5rem;
+    }
+    
+    .random-number {
+        font-size: 3rem;
+        min-height: 60px;
+    }
+    
+    .stats-info {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .history-item {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .history-timestamp {
+        text-align: center;
+    }
+    
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -1282,5 +1541,188 @@ button {
     .level-info {
         flex-direction: column;
         align-items: flex-start;
+    }
+}
+
+/* ランダムカード表示のスタイル */
+.random-cards-display-area {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(247, 250, 252, 0.95) 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 2rem 0;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(102, 126, 234, 0.15);
+}
+
+.cards-container {
+    margin-bottom: 2rem;
+}
+
+.current-cards {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(247, 250, 252, 0.9) 100%);
+    border-radius: 16px;
+    border: 2px dashed rgba(102, 126, 234, 0.3);
+}
+
+.start-message {
+    color: #64748b;
+    font-size: 1.1rem;
+    font-style: italic;
+    text-align: center;
+    margin: 0;
+}
+
+.random-cards-grid {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.random-cards-grid .card {
+    width: 120px;
+    height: 160px;
+    margin: 0.5rem;
+    transform-origin: center;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.random-cards-grid .card:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 16px 48px rgba(102, 126, 234, 0.3);
+    z-index: 10;
+}
+
+.card-conversion-area {
+    background: rgba(247, 250, 252, 0.8);
+    border-radius: 16px;
+    padding: 2rem;
+    margin: 2rem 0;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.card-conversion-area h4 {
+    color: #1a202c;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.conversion-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.conversion-inputs textarea {
+    width: 100%;
+    max-width: 500px;
+    padding: 1rem;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    resize: vertical;
+    background: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+    line-height: 1.5;
+}
+
+.conversion-inputs textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+    background: white;
+    transform: translateY(-1px);
+}
+
+.cards-stats-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: rgba(247, 250, 252, 0.8);
+    border-radius: 12px;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.cards-stats-info p {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
+    text-align: center;
+    padding: 0.5rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.cards-stats-info span {
+    color: #667eea;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.history-cards {
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    color: #667eea;
+    text-align: center;
+    background: white;
+    padding: 0.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    min-width: 120px;
+}
+
+/* ボタンの追加スタイリング */
+#reset-deck {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
+}
+
+#reset-deck:hover {
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.4);
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+    .random-cards-grid {
+        gap: 1rem;
+    }
+    
+    .random-cards-grid .card {
+        width: 90px;
+        height: 125px;
+        margin: 0.25rem;
+    }
+    
+    .card-conversion-area {
+        padding: 1.5rem;
+    }
+    
+    .cards-stats-info {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .conversion-inputs textarea {
+        max-width: 100%;
+    }
+    
+    .current-cards {
+        min-height: 150px;
+        padding: 1.5rem;
     }
 }

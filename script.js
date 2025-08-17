@@ -19,6 +19,20 @@ class MemoryTrainer {
         this.timer = null;
         this.timeRemaining = 0;
         this.speechSynthesis = window.speechSynthesis;
+        
+        // ランダム数字表示用の変数
+        this.randomDisplayTimer = null;
+        this.displayCount = 0;
+        this.conversionCount = 0;
+        this.conversionHistory = this.loadConversionHistory() || [];
+        
+        // ランダムカード表示用の変数
+        this.randomCardTimer = null;
+        this.cardDisplayCount = 0;
+        this.cardConversionCount = 0;
+        this.cardConversionHistory = this.loadCardConversionHistory() || [];
+        this.availableCards = [...this.cards];
+        this.usedCards = [];
         this.difficultySettings = {
             beginner: { digits: 2, count: 3, timeLimit: 0 },
             intermediate: { digits: 3, count: 5, timeLimit: 60 },
@@ -155,6 +169,69 @@ class MemoryTrainer {
             this.submitWordAnswer();
         });
 
+        // ランダム数字表示のイベントリスナー
+        document.getElementById('number-format').addEventListener('change', (e) => {
+            this.handleNumberFormatChange(e.target.value);
+        });
+
+        document.getElementById('start-random-display').addEventListener('click', () => {
+            this.startRandomDisplay();
+        });
+
+        document.getElementById('stop-random-display').addEventListener('click', () => {
+            this.stopRandomDisplay();
+        });
+
+        document.getElementById('next-random-number').addEventListener('click', () => {
+            this.generateNewRandomNumber();
+        });
+
+        document.getElementById('save-conversion').addEventListener('click', () => {
+            this.saveImageConversion();
+        });
+
+        document.getElementById('image-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.saveImageConversion();
+            }
+        });
+
+        document.getElementById('clear-history').addEventListener('click', () => {
+            this.clearConversionHistory();
+        });
+
+        // ランダムカード表示のイベントリスナー
+        document.getElementById('start-random-cards').addEventListener('click', () => {
+            this.startRandomCardDisplay();
+        });
+
+        document.getElementById('stop-random-cards').addEventListener('click', () => {
+            this.stopRandomCardDisplay();
+        });
+
+        document.getElementById('next-random-cards').addEventListener('click', () => {
+            this.generateNewRandomCards();
+        });
+
+        document.getElementById('reset-deck').addEventListener('click', () => {
+            this.resetCardDeck();
+        });
+
+        document.getElementById('save-card-conversion').addEventListener('click', () => {
+            this.saveCardImageConversion();
+        });
+
+        document.getElementById('card-image-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                this.saveCardImageConversion();
+            }
+        });
+
+        document.getElementById('clear-card-history').addEventListener('click', () => {
+            this.clearCardConversionHistory();
+        });
+
     }
 
     switchGame(gameId) {
@@ -175,6 +252,18 @@ class MemoryTrainer {
         // 統計画面を表示する場合は統計情報を更新
         if (gameId === 'statistics') {
             this.updateStatisticsDisplay();
+        }
+        
+        // ランダム数字画面を表示する場合は履歴を更新
+        if (gameId === 'random-numbers') {
+            this.updateConversionHistoryDisplay();
+            this.updateRandomNumberStats();
+        }
+        
+        // ランダムカード画面を表示する場合は履歴を更新
+        if (gameId === 'random-cards') {
+            this.updateCardConversionHistoryDisplay();
+            this.updateRandomCardStats();
         }
     }
 
@@ -935,6 +1024,423 @@ class MemoryTrainer {
             this.updateStatisticsDisplay();
             alert('データがリセットされました。');
         }
+    }
+
+    // ランダム数字表示機能
+    handleNumberFormatChange(format) {
+        const customDigits = document.getElementById('custom-digits');
+        if (format === 'custom') {
+            customDigits.style.display = 'block';
+        } else {
+            customDigits.style.display = 'none';
+        }
+    }
+
+    startRandomDisplay() {
+        const displaySpeed = document.getElementById('display-speed').value;
+        const startBtn = document.getElementById('start-random-display');
+        const stopBtn = document.getElementById('stop-random-display');
+        const nextBtn = document.getElementById('next-random-number');
+
+        startBtn.style.display = 'none';
+        stopBtn.style.display = 'inline-block';
+
+        if (displaySpeed === 'manual') {
+            nextBtn.style.display = 'inline-block';
+            this.generateNewRandomNumber();
+        } else {
+            nextBtn.style.display = 'none';
+            this.startAutoRandomDisplay(displaySpeed);
+        }
+    }
+
+    stopRandomDisplay() {
+        const startBtn = document.getElementById('start-random-display');
+        const stopBtn = document.getElementById('stop-random-display');
+        const nextBtn = document.getElementById('next-random-number');
+
+        if (this.randomDisplayTimer) {
+            clearInterval(this.randomDisplayTimer);
+            this.randomDisplayTimer = null;
+        }
+
+        startBtn.style.display = 'inline-block';
+        stopBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+    }
+
+    startAutoRandomDisplay(speed) {
+        const intervals = {
+            'slow': 3000,
+            'medium': 2000,
+            'fast': 1000
+        };
+
+        this.generateNewRandomNumber();
+        
+        this.randomDisplayTimer = setInterval(() => {
+            this.generateNewRandomNumber();
+        }, intervals[speed]);
+    }
+
+    generateNewRandomNumber() {
+        const format = document.getElementById('number-format').value;
+        let number;
+
+        switch (format) {
+            case 'single':
+                number = Math.floor(Math.random() * 10).toString();
+                break;
+            case 'double':
+                number = Math.floor(Math.random() * 100).toString().padStart(2, '0');
+                break;
+            case 'triple':
+                number = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+                break;
+            case 'custom':
+                const digits = parseInt(document.getElementById('custom-digit-count').value);
+                const max = Math.pow(10, digits);
+                number = Math.floor(Math.random() * max).toString().padStart(digits, '0');
+                break;
+            default:
+                number = Math.floor(Math.random() * 100).toString().padStart(2, '0');
+        }
+
+        document.getElementById('current-random-number').textContent = number;
+        document.getElementById('image-input').value = '';
+        
+        this.displayCount++;
+        this.updateRandomNumberStats();
+
+        // アニメーション効果
+        const numberElement = document.getElementById('current-random-number');
+        numberElement.style.animation = 'none';
+        setTimeout(() => {
+            numberElement.style.animation = 'highlight 0.5s ease-in-out';
+        }, 10);
+    }
+
+    saveImageConversion() {
+        const number = document.getElementById('current-random-number').textContent;
+        const image = document.getElementById('image-input').value.trim();
+
+        if (number === '--' || !image) {
+            alert('数字とイメージを入力してください。');
+            return;
+        }
+
+        const conversion = {
+            number: number,
+            image: image,
+            timestamp: new Date().toLocaleString('ja-JP')
+        };
+
+        this.conversionHistory.unshift(conversion);
+        if (this.conversionHistory.length > 50) {
+            this.conversionHistory.pop();
+        }
+
+        this.conversionCount++;
+        this.saveConversionHistory();
+        this.updateConversionHistoryDisplay();
+        this.updateRandomNumberStats();
+
+        document.getElementById('image-input').value = '';
+        
+        // 成功メッセージ
+        const saveBtn = document.getElementById('save-conversion');
+        const originalText = saveBtn.textContent;
+        saveBtn.textContent = '保存済み！';
+        saveBtn.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
+        
+        setTimeout(() => {
+            saveBtn.textContent = originalText;
+            saveBtn.style.background = '';
+        }, 1500);
+    }
+
+    updateRandomNumberStats() {
+        document.getElementById('display-count').textContent = this.displayCount;
+        document.getElementById('conversion-count').textContent = this.conversionCount;
+    }
+
+    updateConversionHistoryDisplay() {
+        const historyList = document.getElementById('history-list');
+        const clearBtn = document.getElementById('clear-history');
+
+        if (this.conversionHistory.length === 0) {
+            historyList.innerHTML = '<p class="no-history">まだ履歴がありません</p>';
+            clearBtn.style.display = 'none';
+        } else {
+            const historyHTML = this.conversionHistory.map(item => `
+                <div class="history-item">
+                    <div class="history-number">${item.number}</div>
+                    <div class="history-image">${item.image}</div>
+                    <div class="history-timestamp">${item.timestamp}</div>
+                </div>
+            `).join('');
+            
+            historyList.innerHTML = historyHTML;
+            clearBtn.style.display = 'inline-block';
+        }
+    }
+
+    clearConversionHistory() {
+        if (confirm('変換履歴をすべて削除しますか？')) {
+            this.conversionHistory = [];
+            this.conversionCount = 0;
+            this.saveConversionHistory();
+            this.updateConversionHistoryDisplay();
+            this.updateRandomNumberStats();
+        }
+    }
+
+    saveConversionHistory() {
+        localStorage.setItem('memoryTrainerConversionHistory', JSON.stringify(this.conversionHistory));
+        localStorage.setItem('memoryTrainerConversionCount', this.conversionCount.toString());
+        localStorage.setItem('memoryTrainerDisplayCount', this.displayCount.toString());
+    }
+
+    loadConversionHistory() {
+        const history = localStorage.getItem('memoryTrainerConversionHistory');
+        const conversionCount = localStorage.getItem('memoryTrainerConversionCount');
+        const displayCount = localStorage.getItem('memoryTrainerDisplayCount');
+        
+        if (conversionCount) this.conversionCount = parseInt(conversionCount);
+        if (displayCount) this.displayCount = parseInt(displayCount);
+        
+        return history ? JSON.parse(history) : null;
+    }
+
+    // ランダムカード表示機能
+    startRandomCardDisplay() {
+        const displaySpeed = document.getElementById('card-display-speed').value;
+        const startBtn = document.getElementById('start-random-cards');
+        const stopBtn = document.getElementById('stop-random-cards');
+        const nextBtn = document.getElementById('next-random-cards');
+        const resetBtn = document.getElementById('reset-deck');
+
+        startBtn.style.display = 'none';
+        stopBtn.style.display = 'inline-block';
+        resetBtn.style.display = 'inline-block';
+
+        if (displaySpeed === 'manual') {
+            nextBtn.style.display = 'inline-block';
+            this.generateNewRandomCards();
+        } else {
+            nextBtn.style.display = 'none';
+            this.startAutoRandomCardDisplay(displaySpeed);
+        }
+    }
+
+    stopRandomCardDisplay() {
+        const startBtn = document.getElementById('start-random-cards');
+        const stopBtn = document.getElementById('stop-random-cards');
+        const nextBtn = document.getElementById('next-random-cards');
+
+        if (this.randomCardTimer) {
+            clearInterval(this.randomCardTimer);
+            this.randomCardTimer = null;
+        }
+
+        startBtn.style.display = 'inline-block';
+        stopBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+    }
+
+    startAutoRandomCardDisplay(speed) {
+        const intervals = {
+            'slow': 4000,
+            'medium': 3000,
+            'fast': 2000
+        };
+
+        this.generateNewRandomCards();
+        
+        this.randomCardTimer = setInterval(() => {
+            this.generateNewRandomCards();
+        }, intervals[speed]);
+    }
+
+    generateNewRandomCards() {
+        const cardCount = parseInt(document.getElementById('random-card-count').value);
+        const excludeUsed = document.getElementById('exclude-used-cards').checked;
+        
+        let cardsToUse = excludeUsed ? this.availableCards : this.cards;
+        
+        if (excludeUsed && this.availableCards.length < cardCount) {
+            // 残りカードが不足している場合の処理
+            this.resetCardDeck();
+            cardsToUse = this.availableCards;
+        }
+
+        const selectedCards = this.getRandomCardsFromDeck(cardsToUse, cardCount);
+        
+        if (excludeUsed) {
+            // 使用済みカードをリストに移動
+            selectedCards.forEach(card => {
+                const index = this.availableCards.findIndex(c => 
+                    c.value === card.value && c.suit === card.suit
+                );
+                if (index !== -1) {
+                    this.availableCards.splice(index, 1);
+                    this.usedCards.push(card);
+                }
+            });
+        }
+
+        this.displayRandomCards(selectedCards);
+        this.cardDisplayCount++;
+        this.updateRandomCardStats();
+
+        document.getElementById('card-image-input').value = '';
+    }
+
+    getRandomCardsFromDeck(deck, count) {
+        const shuffled = [...deck].sort(() => Math.random() - 0.5);
+        return shuffled.slice(0, count);
+    }
+
+    displayRandomCards(cards) {
+        const container = document.getElementById('current-random-cards');
+        
+        const cardsHTML = cards.map(card => this.createCardElement(card, true)).join('');
+        container.innerHTML = `<div class="random-cards-grid">${cardsHTML}</div>`;
+
+        // アニメーション効果
+        const cardElements = container.querySelectorAll('.card');
+        cardElements.forEach((cardEl, index) => {
+            cardEl.style.opacity = '0';
+            cardEl.style.transform = 'scale(0.8) translateY(20px)';
+            setTimeout(() => {
+                cardEl.style.transition = 'all 0.5s ease';
+                cardEl.style.opacity = '1';
+                cardEl.style.transform = 'scale(1) translateY(0)';
+            }, index * 100);
+        });
+    }
+
+    resetCardDeck() {
+        this.availableCards = [...this.cards];
+        this.usedCards = [];
+        this.updateRandomCardStats();
+        
+        // 成功メッセージ
+        const resetBtn = document.getElementById('reset-deck');
+        const originalText = resetBtn.textContent;
+        resetBtn.textContent = 'リセット完了！';
+        resetBtn.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
+        
+        setTimeout(() => {
+            resetBtn.textContent = originalText;
+            resetBtn.style.background = '';
+        }, 1500);
+    }
+
+    saveCardImageConversion() {
+        const container = document.getElementById('current-random-cards');
+        const cardElements = container.querySelectorAll('.card');
+        
+        if (cardElements.length === 0) {
+            alert('カードが表示されていません。');
+            return;
+        }
+
+        const image = document.getElementById('card-image-input').value.trim();
+        if (!image) {
+            alert('イメージを入力してください。');
+            return;
+        }
+
+        // 表示されているカードの情報を取得
+        const cardInfo = Array.from(cardElements).map(cardEl => {
+            const valueEl = cardEl.querySelector('.card-value');
+            const suitEl = cardEl.querySelector('.card-suit');
+            return `${valueEl.textContent}${suitEl.textContent}`;
+        }).join(', ');
+
+        const conversion = {
+            cards: cardInfo,
+            image: image,
+            timestamp: new Date().toLocaleString('ja-JP')
+        };
+
+        this.cardConversionHistory.unshift(conversion);
+        if (this.cardConversionHistory.length > 50) {
+            this.cardConversionHistory.pop();
+        }
+
+        this.cardConversionCount++;
+        this.saveCardConversionHistory();
+        this.updateCardConversionHistoryDisplay();
+        this.updateRandomCardStats();
+
+        document.getElementById('card-image-input').value = '';
+        
+        // 成功メッセージ
+        const saveBtn = document.getElementById('save-card-conversion');
+        const originalText = saveBtn.textContent;
+        saveBtn.textContent = '保存済み！';
+        saveBtn.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
+        
+        setTimeout(() => {
+            saveBtn.textContent = originalText;
+            saveBtn.style.background = '';
+        }, 1500);
+    }
+
+    updateRandomCardStats() {
+        document.getElementById('cards-display-count').textContent = this.cardDisplayCount;
+        document.getElementById('cards-conversion-count').textContent = this.cardConversionCount;
+        document.getElementById('remaining-cards').textContent = this.availableCards.length;
+    }
+
+    updateCardConversionHistoryDisplay() {
+        const historyList = document.getElementById('card-history-list');
+        const clearBtn = document.getElementById('clear-card-history');
+
+        if (this.cardConversionHistory.length === 0) {
+            historyList.innerHTML = '<p class="no-history">まだ履歴がありません</p>';
+            clearBtn.style.display = 'none';
+        } else {
+            const historyHTML = this.cardConversionHistory.map(item => `
+                <div class="history-item">
+                    <div class="history-cards">${item.cards}</div>
+                    <div class="history-image">${item.image}</div>
+                    <div class="history-timestamp">${item.timestamp}</div>
+                </div>
+            `).join('');
+            
+            historyList.innerHTML = historyHTML;
+            clearBtn.style.display = 'inline-block';
+        }
+    }
+
+    clearCardConversionHistory() {
+        if (confirm('カード変換履歴をすべて削除しますか？')) {
+            this.cardConversionHistory = [];
+            this.cardConversionCount = 0;
+            this.saveCardConversionHistory();
+            this.updateCardConversionHistoryDisplay();
+            this.updateRandomCardStats();
+        }
+    }
+
+    saveCardConversionHistory() {
+        localStorage.setItem('memoryTrainerCardConversionHistory', JSON.stringify(this.cardConversionHistory));
+        localStorage.setItem('memoryTrainerCardConversionCount', this.cardConversionCount.toString());
+        localStorage.setItem('memoryTrainerCardDisplayCount', this.cardDisplayCount.toString());
+    }
+
+    loadCardConversionHistory() {
+        const history = localStorage.getItem('memoryTrainerCardConversionHistory');
+        const conversionCount = localStorage.getItem('memoryTrainerCardConversionCount');
+        const displayCount = localStorage.getItem('memoryTrainerCardDisplayCount');
+        
+        if (conversionCount) this.cardConversionCount = parseInt(conversionCount);
+        if (displayCount) this.cardDisplayCount = parseInt(displayCount);
+        
+        return history ? JSON.parse(history) : null;
     }
 }
 
