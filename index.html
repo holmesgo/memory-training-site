@@ -614,5 +614,50 @@
     </footer>
 
     <script src="script.js"></script>
+    
+    <!-- 緊急用シンプルナビゲーション -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Simple navigation script loaded');
+        
+        // シンプルなナビゲーション機能
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const gameContents = document.querySelectorAll('.game-content');
+        
+        console.log('Found navigation buttons:', navButtons.length);
+        console.log('Found game contents:', gameContents.length);
+        
+        navButtons.forEach(function(button, index) {
+            const gameId = button.getAttribute('data-game');
+            console.log('Button ' + index + ': ' + gameId);
+            
+            button.addEventListener('click', function(e) {
+                console.log('Clicked button for game:', gameId);
+                
+                // すべてのボタンからactiveクラスを削除
+                navButtons.forEach(function(btn) {
+                    btn.classList.remove('active');
+                });
+                
+                // クリックされたボタンにactiveクラスを追加
+                button.classList.add('active');
+                
+                // すべてのゲームコンテンツからactiveクラスを削除
+                gameContents.forEach(function(content) {
+                    content.classList.remove('active');
+                });
+                
+                // 対応するゲームコンテンツにactiveクラスを追加
+                const targetContent = document.getElementById(gameId);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                    console.log('Successfully switched to:', gameId);
+                } else {
+                    console.error('Game content not found:', gameId);
+                }
+            });
+        });
+    });
+    </script>
 </body>
 </html>

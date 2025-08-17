@@ -1,44 +1,75 @@
 class MemoryTrainer {
     constructor() {
-        this.currentGame = 'number-sequence';
-        this.score = this.loadScore() || {
-            correct: 0,
-            total: 0
-        };
-        this.gameStats = this.loadGameStats() || {
-            'number-sequence': { correct: 0, total: 0, streak: 0, bestStreak: 0 },
-            'card-sequence': { correct: 0, total: 0, streak: 0, bestStreak: 0 },
-            'object-memory': { correct: 0, total: 0, streak: 0, bestStreak: 0 },
-            'word-memory': { correct: 0, total: 0, streak: 0, bestStreak: 0 },
-            'number-image': { practiceCount: 0, lastPracticeDate: null },
-            'card-image': { practiceCount: 0, lastPracticeDate: null }
-        };
-        this.recentResults = this.loadRecentResults() || [];
-        this.practiceDates = this.loadPracticeDates() || [];
-        this.currentStreak = 0;
-        this.timer = null;
-        this.timeRemaining = 0;
-        this.speechSynthesis = window.speechSynthesis;
-        
-        // ランダム数字表示用の変数
-        this.randomDisplayTimer = null;
-        this.displayCount = 0;
-        this.conversionCount = 0;
-        this.conversionHistory = this.loadConversionHistory() || [];
-        
-        // ランダムカード表示用の変数
-        this.randomCardTimer = null;
-        this.cardDisplayCount = 0;
-        this.cardConversionCount = 0;
-        this.cardConversionHistory = this.loadCardConversionHistory() || [];
-        this.availableCards = [...this.cards];
-        this.usedCards = [];
-        this.difficultySettings = {
-            beginner: { digits: 2, count: 3, timeLimit: 0 },
-            intermediate: { digits: 3, count: 5, timeLimit: 60 },
-            advanced: { digits: 4, count: 8, timeLimit: 45 },
-            expert: { digits: 5, count: 10, timeLimit: 30 }
-        };
+        try {
+            console.log('MemoryTrainer constructor started');
+            
+            this.currentGame = 'number-sequence';
+            
+            // LocalStorageの読み込み
+            try {
+                this.score = this.loadScore() || { correct: 0, total: 0 };
+                this.gameStats = this.loadGameStats() || {
+                    'number-sequence': { correct: 0, total: 0, streak: 0, bestStreak: 0 },
+                    'card-sequence': { correct: 0, total: 0, streak: 0, bestStreak: 0 },
+                    'object-memory': { correct: 0, total: 0, streak: 0, bestStreak: 0 },
+                    'word-memory': { correct: 0, total: 0, streak: 0, bestStreak: 0 },
+                    'number-image': { practiceCount: 0, lastPracticeDate: null },
+                    'card-image': { practiceCount: 0, lastPracticeDate: null }
+                };
+                this.recentResults = this.loadRecentResults() || [];
+                this.practiceDates = this.loadPracticeDates() || [];
+                this.conversionHistory = this.loadConversionHistory() || [];
+                this.cardConversionHistory = this.loadCardConversionHistory() || [];
+            } catch (error) {
+                console.error('Error loading data from localStorage:', error);
+                // デフォルト値を設定
+                this.score = { correct: 0, total: 0 };
+                this.gameStats = {
+                    'number-sequence': { correct: 0, total: 0, streak: 0, bestStreak: 0 },
+                    'card-sequence': { correct: 0, total: 0, streak: 0, bestStreak: 0 },
+                    'object-memory': { correct: 0, total: 0, streak: 0, bestStreak: 0 },
+                    'word-memory': { correct: 0, total: 0, streak: 0, bestStreak: 0 },
+                    'number-image': { practiceCount: 0, lastPracticeDate: null },
+                    'card-image': { practiceCount: 0, lastPracticeDate: null }
+                };
+                this.recentResults = [];
+                this.practiceDates = [];
+                this.conversionHistory = [];
+                this.cardConversionHistory = [];
+            }
+            
+            // 基本変数の初期化
+            this.currentStreak = 0;
+            this.timer = null;
+            this.timeRemaining = 0;
+            
+            // ランダム数字表示用の変数
+            this.randomDisplayTimer = null;
+            this.displayCount = 0;
+            this.conversionCount = 0;
+            
+            // ランダムカード表示用の変数
+            this.randomCardTimer = null;
+            this.cardDisplayCount = 0;
+            this.cardConversionCount = 0;
+            this.availableCards = [...this.cards];
+            this.usedCards = [];
+            
+            // Speech Synthesis
+            try {
+                this.speechSynthesis = window.speechSynthesis;
+            } catch (error) {
+                console.warn('Speech synthesis not available:', error);
+                this.speechSynthesis = null;
+            }
+            
+            // 設定の初期化
+            this.difficultySettings = {
+                beginner: { digits: 2, count: 3, timeLimit: 0 },
+                intermediate: { digits: 3, count: 5, timeLimit: 60 },
+                advanced: { digits: 4, count: 8, timeLimit: 45 },
+                expert: { digits: 5, count: 10, timeLimit: 30 }
+            };
         
         this.cards = [
             {value: 'A', suit: '♠', color: 'black'},
@@ -110,44 +141,54 @@ class MemoryTrainer {
             sports: ['野球', 'サッカー', 'テニス', 'バスケ', 'バレー', '水泳', '陸上', 'ゴルフ', '卓球', '柔道', '空手', 'ボクシング', 'スキー', 'ラグビー', 'アメフト']
         };
 
-        this.initializeEventListeners();
-        this.updateScoreDisplay();
+            // イベントリスナーの初期化
+            try {
+                console.log('Initializing event listeners...');
+                this.initializeEventListeners();
+                console.log('Event listeners initialized successfully');
+            } catch (error) {
+                console.error('Error initializing event listeners:', error);
+            }
+            
+            // スコア表示の更新
+            try {
+                this.updateScoreDisplay();
+            } catch (error) {
+                console.error('Error updating score display:', error);
+            }
+            
+            console.log('MemoryTrainer constructor completed successfully');
+            
+        } catch (error) {
+            console.error('Error in MemoryTrainer constructor:', error);
+            throw error;
+        }
     }
 
     initializeEventListeners() {
-        // ナビゲーションボタンのイベントリスナー
-        const navButtons = document.querySelectorAll('.nav-btn');
-        console.log(`Found ${navButtons.length} navigation buttons`);
-        
-        navButtons.forEach((btn, index) => {
-            const gameId = btn.getAttribute('data-game');
-            console.log(`Button ${index}: data-game="${gameId}"`);
+        try {
+            // ナビゲーションボタンのイベントリスナー
+            const navButtons = document.querySelectorAll('.nav-btn');
             
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log(`Clicked navigation button: ${gameId}`);
-                
-                if (gameId) {
-                    this.switchGame(gameId);
-                } else {
-                    console.error('No data-game attribute found on button');
-                }
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const gameId = e.currentTarget.getAttribute('data-game');
+                    if (gameId) {
+                        this.switchGame(gameId);
+                    }
+                });
             });
-            
-            // タッチイベントも追加（モバイル対応）
-            btn.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (gameId) {
-                    this.switchGame(gameId);
-                }
-            });
-        });
+        } catch (error) {
+            console.error('Error setting up navigation listeners:', error);
+        }
 
-        document.getElementById('start-number-game').addEventListener('click', () => {
-            this.startNumberGame();
-        });
+        try {
+            document.getElementById('start-number-game').addEventListener('click', () => {
+                this.startNumberGame();
+            });
+        } catch (error) {
+            console.error('Error setting up start-number-game listener:', error);
+        }
 
         document.getElementById('submit-number').addEventListener('click', () => {
             this.submitNumberAnswer();
@@ -258,50 +299,48 @@ class MemoryTrainer {
     }
 
     switchGame(gameId) {
-        console.log(`Switching to game: ${gameId}`);
-        
-        // アクティブなナビゲーションボタンを更新
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        
-        const targetButton = document.querySelector(`[data-game="${gameId}"]`);
-        if (targetButton) {
-            targetButton.classList.add('active');
-        } else {
-            console.error(`Button with data-game="${gameId}" not found`);
-        }
+        try {
+            // アクティブなナビゲーションボタンを更新
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            const targetButton = document.querySelector(`[data-game="${gameId}"]`);
+            if (targetButton) {
+                targetButton.classList.add('active');
+            }
 
-        document.querySelectorAll('.game-content').forEach(content => {
-            content.classList.remove('active');
-        });
-        
-        const targetContent = document.getElementById(gameId);
-        if (targetContent) {
-            targetContent.classList.add('active');
-            console.log(`Successfully switched to ${gameId}`);
-        } else {
-            console.error(`Game content with id="${gameId}" not found`);
-        }
+            // ゲームコンテンツを切り替え
+            document.querySelectorAll('.game-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            const targetContent = document.getElementById(gameId);
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
 
-        this.currentGame = gameId;
-        this.resetCurrentGame();
-        
-        // 統計画面を表示する場合は統計情報を更新
-        if (gameId === 'statistics') {
-            this.updateStatisticsDisplay();
-        }
-        
-        // ランダム数字画面を表示する場合は履歴を更新
-        if (gameId === 'random-numbers') {
-            this.updateConversionHistoryDisplay();
-            this.updateRandomNumberStats();
-        }
-        
-        // ランダムカード画面を表示する場合は履歴を更新
-        if (gameId === 'random-cards') {
-            this.updateCardConversionHistoryDisplay();
-            this.updateRandomCardStats();
+            this.currentGame = gameId;
+            this.resetCurrentGame();
+            
+            // 統計画面を表示する場合は統計情報を更新
+            if (gameId === 'statistics') {
+                this.updateStatisticsDisplay();
+            }
+            
+            // ランダム数字画面を表示する場合は履歴を更新
+            if (gameId === 'random-numbers') {
+                this.updateConversionHistoryDisplay();
+                this.updateRandomNumberStats();
+            }
+            
+            // ランダムカード画面を表示する場合は履歴を更新
+            if (gameId === 'random-cards') {
+                this.updateCardConversionHistoryDisplay();
+                this.updateRandomCardStats();
+            }
+        } catch (error) {
+            console.error('Error switching game:', error);
         }
     }
 
@@ -1483,5 +1522,13 @@ class MemoryTrainer {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    new MemoryTrainer();
+    try {
+        console.log('Initializing MemoryTrainer...');
+        const memoryTrainer = new MemoryTrainer();
+        window.memoryTrainer = memoryTrainer; // デバッグ用にグローバル変数として設定
+        console.log('MemoryTrainer initialized successfully');
+    } catch (error) {
+        console.error('Error initializing MemoryTrainer:', error);
+        console.error('Stack trace:', error.stack);
+    }
 });
