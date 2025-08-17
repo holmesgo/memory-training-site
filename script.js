@@ -116,9 +116,32 @@ class MemoryTrainer {
 
     initializeEventListeners() {
         // ナビゲーションボタンのイベントリスナー
-        document.querySelectorAll('.nav-btn').forEach(btn => {
+        const navButtons = document.querySelectorAll('.nav-btn');
+        console.log(`Found ${navButtons.length} navigation buttons`);
+        
+        navButtons.forEach((btn, index) => {
+            const gameId = btn.getAttribute('data-game');
+            console.log(`Button ${index}: data-game="${gameId}"`);
+            
             btn.addEventListener('click', (e) => {
-                this.switchGame(e.currentTarget.dataset.game);
+                e.preventDefault();
+                e.stopPropagation();
+                console.log(`Clicked navigation button: ${gameId}`);
+                
+                if (gameId) {
+                    this.switchGame(gameId);
+                } else {
+                    console.error('No data-game attribute found on button');
+                }
+            });
+            
+            // タッチイベントも追加（モバイル対応）
+            btn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (gameId) {
+                    this.switchGame(gameId);
+                }
             });
         });
 
@@ -235,16 +258,31 @@ class MemoryTrainer {
     }
 
     switchGame(gameId) {
+        console.log(`Switching to game: ${gameId}`);
+        
         // アクティブなナビゲーションボタンを更新
         document.querySelectorAll('.nav-btn').forEach(btn => {
             btn.classList.remove('active');
         });
-        document.querySelector(`[data-game="${gameId}"]`).classList.add('active');
+        
+        const targetButton = document.querySelector(`[data-game="${gameId}"]`);
+        if (targetButton) {
+            targetButton.classList.add('active');
+        } else {
+            console.error(`Button with data-game="${gameId}" not found`);
+        }
 
         document.querySelectorAll('.game-content').forEach(content => {
             content.classList.remove('active');
         });
-        document.getElementById(gameId).classList.add('active');
+        
+        const targetContent = document.getElementById(gameId);
+        if (targetContent) {
+            targetContent.classList.add('active');
+            console.log(`Successfully switched to ${gameId}`);
+        } else {
+            console.error(`Game content with id="${gameId}" not found`);
+        }
 
         this.currentGame = gameId;
         this.resetCurrentGame();
