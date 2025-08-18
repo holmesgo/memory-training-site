@@ -657,6 +657,289 @@
                 }
             });
         });
+        
+        // 緊急用ゲーム開始ボタン機能
+        console.log('Setting up emergency game start buttons...');
+        
+        // 数字記憶ゲーム開始
+        const startNumberGame = document.getElementById('start-number-game');
+        if (startNumberGame) {
+            startNumberGame.addEventListener('click', function() {
+                console.log('Starting number game...');
+                const displayArea = document.getElementById('number-display');
+                if (displayArea) {
+                    // 簡単な数字記憶ゲームを開始
+                    const randomNumber = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+                    displayArea.innerHTML = '<div class="highlight-number">' + randomNumber + '</div>';
+                    
+                    // 3秒後に数字を隠す
+                    setTimeout(function() {
+                        displayArea.innerHTML = '<p>数字を思い出して入力してください</p>';
+                        const answerInput = document.getElementById('number-answer');
+                        if (answerInput) {
+                            answerInput.focus();
+                        }
+                    }, 3000);
+                }
+            });
+            console.log('Number game start button configured');
+        }
+        
+        // カード記憶ゲーム開始
+        const startCardGame = document.getElementById('start-card-game');
+        if (startCardGame) {
+            startCardGame.addEventListener('click', function() {
+                console.log('Starting card game...');
+                const displayArea = document.getElementById('card-display');
+                if (displayArea) {
+                    const suits = ['♠', '♥', '♦', '♣'];
+                    const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+                    
+                    let cardsHTML = '<div class="card-grid">';
+                    for (let i = 0; i < 3; i++) {
+                        const suit = suits[Math.floor(Math.random() * suits.length)];
+                        const value = values[Math.floor(Math.random() * values.length)];
+                        const color = (suit === '♥' || suit === '♦') ? 'red' : 'black';
+                        
+                        cardsHTML += '<div class="card ' + color + '">';
+                        cardsHTML += '<div class="card-corner top-left">';
+                        cardsHTML += '<div class="card-value">' + value + '</div>';
+                        cardsHTML += '<div class="card-suit">' + suit + '</div>';
+                        cardsHTML += '</div>';
+                        cardsHTML += '<div class="card-center">';
+                        cardsHTML += '<div class="card-suit-large">' + suit + '</div>';
+                        cardsHTML += '</div>';
+                        cardsHTML += '<div class="card-corner bottom-right">';
+                        cardsHTML += '<div class="card-value rotated">' + value + '</div>';
+                        cardsHTML += '<div class="card-suit rotated">' + suit + '</div>';
+                        cardsHTML += '</div>';
+                        cardsHTML += '</div>';
+                    }
+                    cardsHTML += '</div>';
+                    
+                    displayArea.innerHTML = cardsHTML;
+                    
+                    // 5秒後にカードを隠す
+                    setTimeout(function() {
+                        displayArea.innerHTML = '<p>カードを思い出してクリックしてください</p>';
+                    }, 5000);
+                }
+            });
+            console.log('Card game start button configured');
+        }
+        
+        // その他のゲーム開始ボタンも同様に設定
+        const startObjectGame = document.getElementById('start-object-game');
+        if (startObjectGame) {
+            startObjectGame.addEventListener('click', function() {
+                console.log('Starting object game...');
+                const displayArea = document.getElementById('object-display');
+                if (displayArea) {
+                    const objects = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯'];
+                    let objectsHTML = '<div class="object-grid">';
+                    
+                    for (let i = 0; i < 5; i++) {
+                        const obj = objects[Math.floor(Math.random() * objects.length)];
+                        objectsHTML += '<div class="object-item large">' + obj + '</div>';
+                    }
+                    objectsHTML += '</div>';
+                    
+                    displayArea.innerHTML = objectsHTML;
+                    
+                    // 4秒後にオブジェクトを隠す
+                    setTimeout(function() {
+                        displayArea.innerHTML = '<p>オブジェクトを思い出してクリックしてください</p>';
+                    }, 4000);
+                }
+            });
+            console.log('Object game start button configured');
+        }
+        
+        const startWordGame = document.getElementById('start-word-game');
+        if (startWordGame) {
+            startWordGame.addEventListener('click', function() {
+                console.log('Starting word game...');
+                const displayArea = document.getElementById('word-display');
+                if (displayArea) {
+                    const words = ['りんご', 'みかん', 'バナナ', 'いちご', 'ぶどう'];
+                    let currentIndex = 0;
+                    
+                    function showNextWord() {
+                        if (currentIndex < words.length) {
+                            displayArea.innerHTML = '<div class="word-display"><div class="word-number">' + (currentIndex + 1) + '/' + words.length + '</div><div class="highlight-word">' + words[currentIndex] + '</div></div>';
+                            currentIndex++;
+                            setTimeout(showNextWord, 2000);
+                        } else {
+                            displayArea.innerHTML = '<p>表示された単語を順番に入力してください</p>';
+                        }
+                    }
+                    
+                    showNextWord();
+                }
+            });
+            console.log('Word game start button configured');
+        }
+        
+        // ランダム数字表示ボタン
+        const startRandomNumbers = document.getElementById('start-random-display');
+        if (startRandomNumbers) {
+            startRandomNumbers.addEventListener('click', function() {
+                console.log('Starting random number display...');
+                const displayArea = document.getElementById('current-random-number');
+                if (displayArea) {
+                    const randomNumber = Math.floor(Math.random() * 100).toString().padStart(2, '0');
+                    displayArea.textContent = randomNumber;
+                    
+                    // 表示カウントを更新
+                    const countElement = document.getElementById('display-count');
+                    if (countElement) {
+                        const currentCount = parseInt(countElement.textContent) || 0;
+                        countElement.textContent = currentCount + 1;
+                    }
+                }
+            });
+            console.log('Random number display button configured');
+        }
+        
+        const nextRandomNumber = document.getElementById('next-random-number');
+        if (nextRandomNumber) {
+            nextRandomNumber.addEventListener('click', function() {
+                const displayArea = document.getElementById('current-random-number');
+                if (displayArea) {
+                    const randomNumber = Math.floor(Math.random() * 100).toString().padStart(2, '0');
+                    displayArea.textContent = randomNumber;
+                    
+                    const countElement = document.getElementById('display-count');
+                    if (countElement) {
+                        const currentCount = parseInt(countElement.textContent) || 0;
+                        countElement.textContent = currentCount + 1;
+                    }
+                }
+            });
+        }
+        
+        // ランダムカード表示ボタン
+        const startRandomCards = document.getElementById('start-random-cards');
+        if (startRandomCards) {
+            startRandomCards.addEventListener('click', function() {
+                console.log('Starting random card display...');
+                const displayArea = document.getElementById('current-random-cards');
+                if (displayArea) {
+                    const suits = ['♠', '♥', '♦', '♣'];
+                    const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+                    
+                    const suit = suits[Math.floor(Math.random() * suits.length)];
+                    const value = values[Math.floor(Math.random() * values.length)];
+                    const color = (suit === '♥' || suit === '♦') ? 'red' : 'black';
+                    
+                    let cardsHTML = '<div class="random-cards-grid">';
+                    cardsHTML += '<div class="card ' + color + '">';
+                    cardsHTML += '<div class="card-corner top-left">';
+                    cardsHTML += '<div class="card-value">' + value + '</div>';
+                    cardsHTML += '<div class="card-suit">' + suit + '</div>';
+                    cardsHTML += '</div>';
+                    cardsHTML += '<div class="card-center">';
+                    cardsHTML += '<div class="card-suit-large">' + suit + '</div>';
+                    cardsHTML += '</div>';
+                    cardsHTML += '<div class="card-corner bottom-right">';
+                    cardsHTML += '<div class="card-value rotated">' + value + '</div>';
+                    cardsHTML += '<div class="card-suit rotated">' + suit + '</div>';
+                    cardsHTML += '</div>';
+                    cardsHTML += '</div>';
+                    cardsHTML += '</div>';
+                    
+                    displayArea.innerHTML = cardsHTML;
+                    
+                    // 表示カウントを更新
+                    const countElement = document.getElementById('cards-display-count');
+                    if (countElement) {
+                        const currentCount = parseInt(countElement.textContent) || 0;
+                        countElement.textContent = currentCount + 1;
+                    }
+                }
+            });
+            console.log('Random card display button configured');
+        }
+        
+        const nextRandomCards = document.getElementById('next-random-cards');
+        if (nextRandomCards) {
+            nextRandomCards.addEventListener('click', function() {
+                const displayArea = document.getElementById('current-random-cards');
+                if (displayArea) {
+                    const suits = ['♠', '♥', '♦', '♣'];
+                    const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+                    
+                    let cardsHTML = '<div class="random-cards-grid">';
+                    const cardCount = parseInt(document.getElementById('random-card-count').value) || 2;
+                    
+                    for (let i = 0; i < cardCount; i++) {
+                        const suit = suits[Math.floor(Math.random() * suits.length)];
+                        const value = values[Math.floor(Math.random() * values.length)];
+                        const color = (suit === '♥' || suit === '♦') ? 'red' : 'black';
+                        
+                        cardsHTML += '<div class="card ' + color + '">';
+                        cardsHTML += '<div class="card-corner top-left">';
+                        cardsHTML += '<div class="card-value">' + value + '</div>';
+                        cardsHTML += '<div class="card-suit">' + suit + '</div>';
+                        cardsHTML += '</div>';
+                        cardsHTML += '<div class="card-center">';
+                        cardsHTML += '<div class="card-suit-large">' + suit + '</div>';
+                        cardsHTML += '</div>';
+                        cardsHTML += '<div class="card-corner bottom-right">';
+                        cardsHTML += '<div class="card-value rotated">' + value + '</div>';
+                        cardsHTML += '<div class="card-suit rotated">' + suit + '</div>';
+                        cardsHTML += '</div>';
+                        cardsHTML += '</div>';
+                    }
+                    cardsHTML += '</div>';
+                    
+                    displayArea.innerHTML = cardsHTML;
+                    
+                    const countElement = document.getElementById('cards-display-count');
+                    if (countElement) {
+                        const currentCount = parseInt(countElement.textContent) || 0;
+                        countElement.textContent = currentCount + 1;
+                    }
+                }
+            });
+        }
+        
+        // 保存ボタンの機能
+        const saveConversion = document.getElementById('save-conversion');
+        if (saveConversion) {
+            saveConversion.addEventListener('click', function() {
+                const input = document.getElementById('image-input');
+                if (input && input.value.trim()) {
+                    alert('イメージが保存されました！');
+                    input.value = '';
+                    
+                    const countElement = document.getElementById('conversion-count');
+                    if (countElement) {
+                        const currentCount = parseInt(countElement.textContent) || 0;
+                        countElement.textContent = currentCount + 1;
+                    }
+                }
+            });
+        }
+        
+        const saveCardConversion = document.getElementById('save-card-conversion');
+        if (saveCardConversion) {
+            saveCardConversion.addEventListener('click', function() {
+                const input = document.getElementById('card-image-input');
+                if (input && input.value.trim()) {
+                    alert('カードイメージが保存されました！');
+                    input.value = '';
+                    
+                    const countElement = document.getElementById('cards-conversion-count');
+                    if (countElement) {
+                        const currentCount = parseInt(countElement.textContent) || 0;
+                        countElement.textContent = currentCount + 1;
+                    }
+                }
+            });
+        }
+        
+        console.log('Emergency game buttons setup completed');
     });
     </script>
 </body>
